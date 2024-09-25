@@ -17,6 +17,6 @@ RUN apt-get update -qq && \
 
 WORKDIR /opt
 
-COPY milli-instagram-story-generator-1.0-SNAPSHOT.jar app.jar
+COPY target/milli-instagram-story-generator-1.0-SNAPSHOT.jar app.jar
 
 CMD [ "java", "-jar", "app.jar" ]
