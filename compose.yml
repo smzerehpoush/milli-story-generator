@@ -1,0 +1,13 @@
+services:
+  story-generator:
+    build: .
+    container_name: story-generator
+    restart: always
+    volumes:
+      - /var/www/html:/opt
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health | jq -e '.status == \"UP\"'"]
+      interval: 10s
+      retries: 20
+      start_period: 20s
+      timeout: 5s
