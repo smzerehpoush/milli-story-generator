@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17
+FROM openjdk:17-oracle
 
 ENV TZ=Asia/Tehran
 
