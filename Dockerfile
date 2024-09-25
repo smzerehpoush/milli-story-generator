@@ -1,7 +1,6 @@
 FROM eclipse-temurin:17
-ENV LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8 \
-    TZ=Asia/Tehran
+
+ENV TZ=Asia/Tehran
 
 WORKDIR /opt
 
