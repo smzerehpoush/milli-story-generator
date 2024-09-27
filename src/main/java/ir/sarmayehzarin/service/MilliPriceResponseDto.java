@@ -1,8 +1,9 @@
 package ir.sarmayehzarin.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDateTime;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 public class MilliPriceResponseDto {

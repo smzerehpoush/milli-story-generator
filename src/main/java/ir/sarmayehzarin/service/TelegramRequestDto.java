@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class TelegramRequestDto {
-  @JsonProperty("chat_id")
-  private Long chatId = -1002362960489L;
+    @JsonProperty("chat_id")
+    private Long chatId = -1002362960489L;
 
-  private String text = "https://mahdiyar.me/result.png";
+    private String text = "https://mahdiyar.me/result.png";
 
-  @JsonProperty("parse_mode")
-  private String parseMode = "HTML";
+    @JsonProperty("parse_mode")
+    private String parseMode = "HTML";
 }
