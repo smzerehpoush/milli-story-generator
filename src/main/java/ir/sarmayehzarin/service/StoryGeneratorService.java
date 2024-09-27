@@ -44,20 +44,19 @@ public class StoryGeneratorService {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < number.length(); i++) {
             char token = number.charAt(i);
-            char digit =
-                    switch (token) {
-                        case '0' -> '۰';
-                        case '1' -> '۱';
-                        case '2' -> '۲';
-                        case '3' -> '۳';
-                        case '4' -> '۴';
-                        case '5' -> '۵';
-                        case '6' -> '۶';
-                        case '7' -> '۷';
-                        case '8' -> '۸';
-                        case '9' -> '۹';
-                        default -> token;
-                    };
+            char digit = switch (token) {
+                case '0' -> '۰';
+                case '1' -> '۱';
+                case '2' -> '۲';
+                case '3' -> '۳';
+                case '4' -> '۴';
+                case '5' -> '۵';
+                case '6' -> '۶';
+                case '7' -> '۷';
+                case '8' -> '۸';
+                case '9' -> '۹';
+                default -> token;
+            };
             result.append(digit);
         }
         return result.toString();
@@ -65,26 +64,17 @@ public class StoryGeneratorService {
 
     private static String convertToPersianDate(LocalDate localDate, String dateFormat) {
         Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        com.ibm.icu.text.SimpleDateFormat formatter =
-                new com.ibm.icu.text.SimpleDateFormat(dateFormat, PERSIAN_LOCALE);
+        com.ibm.icu.text.SimpleDateFormat formatter = new com.ibm.icu.text.SimpleDateFormat(dateFormat, PERSIAN_LOCALE);
         return formatter.format(date);
     }
 
     public void generateStory(int hour) throws Exception {
-        MilliPriceResponseDto responseDto =
-                restTemplate.getForObject(
-                        "https://milli.gold/api/v1/public/milli-price/detail", MilliPriceResponseDto.class);
+        MilliPriceResponseDto responseDto = restTemplate.getForObject("https://milli.gold/api/v1/public/milli-price/detail", MilliPriceResponseDto.class);
         if (responseDto == null) throw new IllegalStateException("error in getting milli price");
         log.info("milli response {}", responseDto);
 
-        File bgFile =
-                new File(
-                        Objects.requireNonNull(StoryGeneratorService.class.getResource(hour + ".png"))
-                                .getPath());
-        String fontPath =
-                Objects.requireNonNull(
-                                StoryGeneratorService.class.getResource("YekanBakhFaNum-SemiBold.ttf"))
-                        .getPath();
+        File bgFile = new File(Objects.requireNonNull(StoryGeneratorService.class.getResource(String.format("/%s.png", hour))).getPath());
+        String fontPath = Objects.requireNonNull(StoryGeneratorService.class.getResource("/YekanBakhFaNum-SemiBold.ttf")).getPath();
 
         BufferedImage backgroundImage = ImageIO.read(bgFile);
         if (backgroundImage == null) {
@@ -92,18 +82,14 @@ public class StoryGeneratorService {
             return;
         }
 
-        BufferedImage combinedImage =
-                new BufferedImage(
-                        backgroundImage.getWidth(), backgroundImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage combinedImage = new BufferedImage(backgroundImage.getWidth(), backgroundImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = combinedImage.createGraphics();
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(
-                RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-        g.setRenderingHint(
-                RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g.drawImage(backgroundImage, 0, 0, null);
         Font dateFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontPath)).deriveFont(36f);
         Font priceFont = Font.createFont(Font.TRUETYPE_FONT, new File(fontPath)).deriveFont(102f);
@@ -124,11 +110,7 @@ public class StoryGeneratorService {
         g.dispose();
 
         ImageIO.write(combinedImage, "png", new File("/var/www/html/result.png"));
-        String response =
-                restTemplate.postForObject(
-                        "https://api.telegram.org/bot7759907035:AAGht_v717Q6II3NsEgmQ5sLB2zBp_8IkOk/sendMessage",
-                        new TelegramRequestDto(),
-                        String.class);
+        String response = restTemplate.postForObject("https://api.telegram.org/bot7759907035:AAGht_v717Q6II3NsEgmQ5sLB2zBp_8IkOk/sendMessage", new TelegramRequestDto(), String.class);
         log.info("telegram response {}", response);
     }
 }
